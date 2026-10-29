@@ -5,3 +5,5 @@ __pycache__/
 out/
 out_*.log
 queue.log
+out32b/
+out32b_*.log

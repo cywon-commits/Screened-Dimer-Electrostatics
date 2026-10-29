@@ -21,12 +21,16 @@ e.g. ./run_pt.sh 64 1 42 1e-5 0.1 6000000 24000000 out 200 200
 Run 4 independent seeds per N.
 aztec_pt checkpoints to OUTDIR/N<N>_s<SEED>.ckpt every AZTEC_CKPT_SEC seconds (default 300); if a run is
 killed, rerun the identical command and it resumes (output is bitwise identical to an uninterrupted run).
+R = a<T> (e.g. a0.35) builds the ladder with ladder.py so that every neighbour pair has predicted swap acceptance >= T
+(reference n(z) from ladder_ref_N<M>.txt).  ckpt_status.py OUTDIR/*.ckpt shows progress and acceptance of running jobs.
 queue.sh runs the priority set (N=32, 48, 64 x 4 seeds) at most nproc at a time; rerun it after a restart.  Increase R until every neighbour swap acceptance printed at the end
 (file OUTDIR/N<N>_s<SEED>.ladder) is >= 0.2.
 
 ## Step 2 - analysis
     python3 pt_analyze.py OUTDIR      -> OUTDIR/summary.csv
 Flags runs whose first/second-half drift exceeds 3 sigma ("not thermalised").
+    python3 trend.py OUTDIR [N]       -> quarter-by-quarter trend with seed-to-seed errors (stricter thermalisation test;
+                                         the binning-error drift test misses slow drifts at small z)
 
 ## Files
 - aztec_pt.c   replica exchange in z; local moves: break/join/slide of monomers, plaquette flips
