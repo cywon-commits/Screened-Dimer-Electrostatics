@@ -1,0 +1,8 @@
+*.o
+aztec/aztec_pt
+aztec/aztec_mc
+mc_bulk/md_mc
+__pycache__/
+*.pyc
+out/
+val/
