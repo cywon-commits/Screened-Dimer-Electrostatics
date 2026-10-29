@@ -1,6 +1,10 @@
 # Large-scale computation request
 
-Full request document (Korean): https://claude.ai/artifact/7YWL447AGx4L8omreMXHEy
+Full request document (Korean): `REQUEST_ko.md` in this folder.
+It refers to the files of `aztec_request_pkg.zip`; in this repository they live in `aztec/`
+(aztec_pt.c, aztec_mc.c, run_pt.sh, pt_analyze.py, validate.sh, aztec.py, pairs.py),
+`bulk_strip/` (tm2.py), `boundary/` (tm_open.py, tm_diag.py) and `mc_bulk/` (md_mc.c).
+Run the scripts from inside `aztec/`.
 
 ## Question
 In the Aztec diamond with monomer fugacity z, is Q_un(N, z) - log2(1/z) a universal (z-independent) function f(N)
