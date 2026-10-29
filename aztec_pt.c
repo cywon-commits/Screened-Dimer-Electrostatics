@@ -6,11 +6,16 @@
  * Measurements per replica: block averages of Q_top and monomer density; per-cell state histograms.
  * usage: aztec_pt N therm meas nblk seed every outprefix z_1 z_2 ... z_R   (z ascending)
  * Output: <outprefix>_r<k>.txt (blocks), <outprefix>_r<k>_hist.txt, swap acceptance on stdout.
+ * Checkpoint: <outprefix>.ckpt is written every AZTEC_CKPT_SEC seconds (default 300) at a block boundary;
+ * rerunning the same command resumes from it (bitwise identical to an uninterrupted run).
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <stdint.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
 
 static uint64_t s[4];
 static inline uint64_t rotl(const uint64_t x, int k){return (x<<k)|(x>>(64-k));}
@@ -64,9 +69,29 @@ int main(int argc, char **argv){
   long **hist=malloc(NR*sizeof(long*)); for(int r=0;r<NR;r++) hist[r]=calloc(5*(size_t)M*M,sizeof(long));
   double *aQ=calloc(NR,sizeof(double)), *an=calloc(NR,sizeof(double)); long cnt=0, per=meas/nblk;
   long *sw_try=calloc(NR,sizeof(long)), *sw_acc=calloc(NR,sizeof(long));
-  FILE **fo=malloc(NR*sizeof(FILE*)); char fn[512];
-  for(int r=0;r<NR;r++){ snprintf(fn,sizeof fn,"%s_r%d.txt",pre,r); fo[r]=fopen(fn,"w"); fprintf(fo[r],"# N %d z %g\n",N,zl[r]); }
-  for(long sw=0; sw<therm+meas; sw++){
+  FILE **fo=malloc(NR*sizeof(FILE*)); char fn[512], ck[512], cktmp[520];
+  snprintf(ck,sizeof ck,"%s.ckpt",pre); snprintf(cktmp,sizeof cktmp,"%s.tmp",ck);
+  double ckint=getenv("AZTEC_CKPT_SEC")?atof(getenv("AZTEC_CKPT_SEC")):300; time_t tck=time(NULL);
+  long sw0=0; FILE *fc=fopen(ck,"rb");
+  if(fc){ /* resume: header must match this run exactly */
+    int hN,hNR; long hth,hme,hper; int ok=fread(&hN,sizeof hN,1,fc)==1&&fread(&hNR,sizeof hNR,1,fc)==1&&fread(&hth,sizeof hth,1,fc)==1
+      &&fread(&hme,sizeof hme,1,fc)==1&&fread(&hper,sizeof hper,1,fc)==1&&hN==N&&hNR==NR&&hth==therm&&hme==meas&&hper==per;
+    double *hz=malloc(NR*sizeof(double)); ok=ok&&fread(hz,sizeof(double),NR,fc)==(size_t)NR&&memcmp(hz,zl,NR*sizeof(double))==0; free(hz);
+    ok=ok&&fread(&sw0,sizeof sw0,1,fc)==1&&fread(s,sizeof s,1,fc)==1;
+    for(int r=0;ok&&r<NR;r++) ok=fread(R[r].p,sizeof(int),M*M,fc)==(size_t)(M*M)&&fread(&R[r].nmono,sizeof(int),1,fc)==1
+      &&fread(&R[r].Q,sizeof(double),1,fc)==1&&fread(hist[r],sizeof(long),5*(size_t)M*M,fc)==5*(size_t)M*M;
+    ok=ok&&fread(sw_try,sizeof(long),NR,fc)==(size_t)NR&&fread(sw_acc,sizeof(long),NR,fc)==(size_t)NR;
+    fclose(fc);
+    if(!ok){fprintf(stderr,"checkpoint %s does not match this run; remove it to start over\n",ck);return 1;}
+    long nbw=sw0>therm?(sw0-therm)/per:0; /* keep header + blocks written before the checkpoint */
+    for(int r=0;r<NR;r++){ snprintf(fn,sizeof fn,"%s_r%d.txt",pre,r); FILE *f=fopen(fn,"r"); char line[256], *keep=calloc(1,(nbw+2)*256); long nl=0;
+      while(f&&nl<=nbw&&fgets(line,sizeof line,f)){strcat(keep,line);nl++;} if(f)fclose(f);
+      if(nl!=nbw+1){fprintf(stderr,"%s has %ld lines, checkpoint expects %ld\n",fn,nl,nbw+1);return 1;}
+      fo[r]=fopen(fn,"w"); fputs(keep,fo[r]); fflush(fo[r]); free(keep); }
+    fprintf(stderr,"resumed from %s at sweep %ld\n",ck,sw0);
+  } else
+    for(int r=0;r<NR;r++){ snprintf(fn,sizeof fn,"%s_r%d.txt",pre,r); fo[r]=fopen(fn,"w"); fprintf(fo[r],"# N %d z %g\n",N,zl[r]); fflush(fo[r]); }
+  for(long sw=sw0; sw<therm+meas; sw++){
     for(int r=0;r<NR;r++) sweep(&R[r]);
     for(int r=(int)(sw&1); r+1<NR; r+=2){
       double lnP=(R[r+1].nmono-R[r].nmono)*log(zl[r]/zl[r+1]);
@@ -84,7 +109,16 @@ int main(int argc, char **argv){
         for(int r=0;r<NR;r++) for(int q=0;q<NC;q++){ int i=cells[q]; int st=0; int *p=R[r].p;
           if(p[i]>=0){ for(int d=0;d<4;d++) if(nb[4*i+d]==p[i]){st=1+d;break;} } hist[r][5*i+st]++; }
     }
+    if(cnt==0&&sw+1<therm+meas&&difftime(time(NULL),tck)>=ckint){ /* state after sweep sw, at a block boundary */
+      long nx=sw+1; FILE *f=fopen(cktmp,"wb"); fwrite(&N,sizeof N,1,f); fwrite(&NR,sizeof NR,1,f); fwrite(&therm,sizeof therm,1,f);
+      fwrite(&meas,sizeof meas,1,f); fwrite(&per,sizeof per,1,f); fwrite(zl,sizeof(double),NR,f); fwrite(&nx,sizeof nx,1,f); fwrite(s,sizeof s,1,f);
+      for(int r=0;r<NR;r++){ fwrite(R[r].p,sizeof(int),M*M,f); fwrite(&R[r].nmono,sizeof(int),1,f); fwrite(&R[r].Q,sizeof(double),1,f);
+        fwrite(hist[r],sizeof(long),5*(size_t)M*M,f); }
+      fwrite(sw_try,sizeof(long),NR,f); fwrite(sw_acc,sizeof(long),NR,f);
+      if(fflush(f)==0&&fsync(fileno(f))==0&&fclose(f)==0) rename(cktmp,ck); else fprintf(stderr,"checkpoint write failed\n");
+      tck=time(NULL); }
   }
+  remove(ck);
   printf("swap acceptance:"); for(int r=0;r+1<NR;r++) printf(" %.3f",sw_try[r]?(double)sw_acc[r]/sw_try[r]:0); printf("\n");
   for(int r=0;r<NR;r++){ fclose(fo[r]); snprintf(fn,sizeof fn,"%s_r%d_hist.txt",pre,r); FILE *f=fopen(fn,"w");
     fprintf(f,"# N %d z %g\n",N,zl[r]);
