@@ -8,6 +8,10 @@
  * Output: <outprefix>_r<k>.txt (blocks), <outprefix>_r<k>_hist.txt, swap acceptance on stdout.
  * Checkpoint: <outprefix>.ckpt is written every AZTEC_CKPT_SEC seconds (default 300) at a block boundary;
  * rerunning the same command resumes from it (bitwise identical to an uninterrupted run).
+ * Replica flow: each configuration carries a label; a round trip is lowest z -> highest z -> lowest z.
+ * Printed at the end: number of round trips, mean round-trip time, and f_up(r) = fraction of labelled
+ * configurations in slot r last seen at the bottom (a flat-to-linear f_up means the ladder is not the bottleneck).
+ * AZTEC_INIT=empty starts every replica from the all-monomer state (default: brick-wall dimers).
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,11 +68,16 @@ int main(int argc, char **argv){
   Rep *R=calloc(NR,sizeof(Rep));
   for(int r=0;r<NR;r++){ R[r].p=malloc(M*M*sizeof(int)); R[r].nmono=0; R[r].Q=0;
     R[r].z=zl[r]; R[r].z2=zl[r]*zl[r]; R[r].iz2=(zl[r]>0)?1.0/R[r].z2:1e300;
+    if(getenv("AZTEC_INIT")&&strcmp(getenv("AZTEC_INIT"),"empty")==0){
+      for(int q=0;q<NC;q++){ int i=cells[q]; R[r].p[i]=-1; R[r].Q+=sgn[i]*wtop[i]; } R[r].nmono=NC; continue; }
     for(int y=0;y<M;y++){ int x0=-1; for(int x=0;x<M;x++) if(inreg[x+M*y]){x0=x;break;}
       if(x0<0) continue; for(int x=x0;x<M&&inreg[x+M*y];x+=2){int i=x+M*y; R[r].p[i]=i+1; R[r].p[i+1]=i;} } }
   long **hist=malloc(NR*sizeof(long*)); for(int r=0;r<NR;r++) hist[r]=calloc(5*(size_t)M*M,sizeof(long));
   double *aQ=calloc(NR,sizeof(double)), *an=calloc(NR,sizeof(double)); long cnt=0, per=meas/nblk;
   long *sw_try=calloc(NR,sizeof(long)), *sw_acc=calloc(NR,sizeof(long));
+  /* replica flow: lab[r] = label of the configuration in slot r; dir[L] = +1 last extreme visited was the bottom, -1 the top */
+  int *lab=malloc(NR*sizeof(int)), *dir=calloc(NR,sizeof(int)); long *t0=calloc(NR,sizeof(long)), *nup=calloc(NR,sizeof(long)), *nlab=calloc(NR,sizeof(long));
+  long trips=0; double rtsum=0; for(int r=0;r<NR;r++) lab[r]=r;
   FILE **fo=malloc(NR*sizeof(FILE*)); char fn[512], ck[512], cktmp[520];
   snprintf(ck,sizeof ck,"%s.ckpt",pre); snprintf(cktmp,sizeof cktmp,"%s.tmp",ck);
   double ckint=getenv("AZTEC_CKPT_SEC")?atof(getenv("AZTEC_CKPT_SEC")):300; time_t tck=time(NULL);
@@ -81,6 +90,13 @@ int main(int argc, char **argv){
     for(int r=0;ok&&r<NR;r++) ok=fread(R[r].p,sizeof(int),M*M,fc)==(size_t)(M*M)&&fread(&R[r].nmono,sizeof(int),1,fc)==1
       &&fread(&R[r].Q,sizeof(double),1,fc)==1&&fread(hist[r],sizeof(long),5*(size_t)M*M,fc)==5*(size_t)M*M;
     ok=ok&&fread(sw_try,sizeof(long),NR,fc)==(size_t)NR&&fread(sw_acc,sizeof(long),NR,fc)==(size_t)NR;
+    if(ok){ /* optional tail (replica flow); absent in checkpoints of older builds */
+      int *l2=malloc(NR*sizeof(int)), *d2=malloc(NR*sizeof(int)); long *a2=malloc(NR*sizeof(long)), *b2=malloc(NR*sizeof(long)), *c2=malloc(NR*sizeof(long)); long tr2; double rs2;
+      if(fread(l2,sizeof(int),NR,fc)==(size_t)NR&&fread(d2,sizeof(int),NR,fc)==(size_t)NR&&fread(a2,sizeof(long),NR,fc)==(size_t)NR
+         &&fread(&tr2,sizeof tr2,1,fc)==1&&fread(&rs2,sizeof rs2,1,fc)==1&&fread(b2,sizeof(long),NR,fc)==(size_t)NR&&fread(c2,sizeof(long),NR,fc)==(size_t)NR){
+        memcpy(lab,l2,NR*sizeof(int)); memcpy(dir,d2,NR*sizeof(int)); memcpy(t0,a2,NR*sizeof(long)); trips=tr2; rtsum=rs2;
+        memcpy(nup,b2,NR*sizeof(long)); memcpy(nlab,c2,NR*sizeof(long)); }
+      free(l2); free(d2); free(a2); free(b2); free(c2); }
     fclose(fc);
     if(!ok){fprintf(stderr,"checkpoint %s does not match this run; remove it to start over\n",ck);return 1;}
     long nbw=sw0>therm?(sw0-therm)/per:0; /* keep header + blocks written before the checkpoint */
@@ -99,8 +115,12 @@ int main(int argc, char **argv){
       if(lnP>=0||urand()<exp(lnP)){
         int *tp=R[r].p; R[r].p=R[r+1].p; R[r+1].p=tp;
         int tn=R[r].nmono; R[r].nmono=R[r+1].nmono; R[r+1].nmono=tn;
-        double tq=R[r].Q; R[r].Q=R[r+1].Q; R[r+1].Q=tq; sw_acc[r]++; }
+        double tq=R[r].Q; R[r].Q=R[r+1].Q; R[r+1].Q=tq; sw_acc[r]++;
+        int tl=lab[r]; lab[r]=lab[r+1]; lab[r+1]=tl; }
     }
+    { int L=lab[0]; if(dir[L]==-1){ trips++; rtsum+=sw-t0[L]; } if(dir[L]!=1){ dir[L]=1; t0[L]=sw; }
+      L=lab[NR-1]; if(dir[L]==1) dir[L]=-1;
+      for(int r=0;r<NR;r++){ L=lab[r]; if(dir[L]){ nlab[r]++; if(dir[L]==1) nup[r]++; } } }
     if(sw>=therm){
       for(int r=0;r<NR;r++){ aQ[r]+=R[r].Q; an[r]+=R[r].nmono; }
       cnt++;
@@ -115,11 +135,15 @@ int main(int argc, char **argv){
       for(int r=0;r<NR;r++){ fwrite(R[r].p,sizeof(int),M*M,f); fwrite(&R[r].nmono,sizeof(int),1,f); fwrite(&R[r].Q,sizeof(double),1,f);
         fwrite(hist[r],sizeof(long),5*(size_t)M*M,f); }
       fwrite(sw_try,sizeof(long),NR,f); fwrite(sw_acc,sizeof(long),NR,f);
+      fwrite(lab,sizeof(int),NR,f); fwrite(dir,sizeof(int),NR,f); fwrite(t0,sizeof(long),NR,f); fwrite(&trips,sizeof trips,1,f);
+      fwrite(&rtsum,sizeof rtsum,1,f); fwrite(nup,sizeof(long),NR,f); fwrite(nlab,sizeof(long),NR,f);
       if(fflush(f)==0&&fsync(fileno(f))==0&&fclose(f)==0) rename(cktmp,ck); else fprintf(stderr,"checkpoint write failed\n");
       tck=time(NULL); }
   }
   remove(ck);
   printf("swap acceptance:"); for(int r=0;r+1<NR;r++) printf(" %.3f",sw_try[r]?(double)sw_acc[r]/sw_try[r]:0); printf("\n");
+  printf("round trips: %ld  mean round-trip sweeps: %.0f\n",trips,trips?rtsum/trips:0);
+  printf("f_up:"); for(int r=0;r<NR;r++) printf(" %.3f",nlab[r]?(double)nup[r]/nlab[r]:0); printf("\n");
   for(int r=0;r<NR;r++){ fclose(fo[r]); snprintf(fn,sizeof fn,"%s_r%d_hist.txt",pre,r); FILE *f=fopen(fn,"w");
     fprintf(f,"# N %d z %g\n",N,zl[r]);
     for(int q=0;q<NC;q++){int i=cells[q]; long *h=hist[r]+5*i; fprintf(f,"%d %d %ld %ld %ld %ld %ld\n",i%M,i/M,h[0],h[1],h[2],h[3],h[4]);}

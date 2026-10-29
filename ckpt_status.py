@@ -10,3 +10,8 @@ for fn in sys.argv[1:]:
     tr = np.frombuffer(b, '<i8', NR, o); ac = np.frombuffer(b, '<i8', NR, o + 8 * NR)
     a = ac[:NR - 1] / np.maximum(tr[:NR - 1], 1)
     print(f"{fn}: sweep {sw:,} / {therm + meas:,} ({100 * sw / (therm + meas):.1f}%), min acc {a.min():.3f}, acc {' '.join(f'{x:.2f}' for x in a)}")
+    o += 16 * NR
+    if len(b) >= o + 16 * NR + 16 + 16 * NR:  # replica-flow tail (newer builds)
+        o += 16 * NR; trips, = struct.unpack_from('<q', b, o); rt, = struct.unpack_from('<d', b, o + 8)
+        nup = np.frombuffer(b, '<i8', NR, o + 16); nl = np.frombuffer(b, '<i8', NR, o + 16 + 8 * NR)
+        print(f"    round trips {trips}, mean {rt / max(trips, 1):,.0f} sweeps; f_up {' '.join(f'{x:.2f}' for x in nup / np.maximum(nl, 1))}")
