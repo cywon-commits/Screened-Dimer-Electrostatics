@@ -3,3 +3,4 @@ aztec_mc
 md_mc
 __pycache__/
 out/
+out_*.log
