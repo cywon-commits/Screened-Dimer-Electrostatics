@@ -7,6 +7,4 @@ out_*.log
 queue.log
 out32b/
 out32b_*.log
-diag32c/
-diag32h/
 diag32*.log
