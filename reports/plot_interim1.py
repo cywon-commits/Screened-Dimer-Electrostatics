@@ -31,7 +31,7 @@ fig.tight_layout(); fig.savefig('reports/fig1_N32_trend.png', dpi=150)
 
 # Fig 2: Psi(s) collapse, N=10, 20, 32
 fig, ax = plt.subplots(figsize=(6.4, 4))
-for c, (out, N) in zip(C, [('val', 10), ('val20', 20), ('ana32', 32)]):
+for c, (out, N) in zip(C, [('val', 10), ('val20', 20), ('ana32', 32), ('out48hi', 48)]):
     r = [x for x in csv.DictReader(open(f'{out}/summary.csv')) if int(x['N']) == N]
     s = np.array([float(x['s']) for x in r]); p = np.array([float(x['Psi']) for x in r]); z = np.array([float(x['z']) for x in r])
     ok = z >= 8.5e-4 if N == 32 else np.ones_like(z, bool)
