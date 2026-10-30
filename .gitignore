@@ -8,3 +8,8 @@ queue.log
 out32b/
 out32b_*.log
 diag32*.log
+out48hi/
+out48lo/
+out48hi_*.log
+out48lo_*.log
+queue2.log
