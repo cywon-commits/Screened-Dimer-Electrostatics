@@ -11,3 +11,8 @@ diag32*.log
 out48hi_*.log
 out48lo_*.log
 queue2.log
+out64pl/
+out64hi/
+out64pl_*.log
+out64hi_*.log
+queue3.log
