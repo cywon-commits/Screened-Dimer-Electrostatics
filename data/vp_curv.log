@@ -1,0 +1,3 @@
+x 0.7 d2S/dlam2  VP eps.02 -0.0235 eps.01 -0.0239 extrap -0.0243 | linear log-gas -0.0212
+x 0.5 d2S/dlam2  VP eps.02 -0.0828 eps.01 -0.0843 extrap -0.0857 | linear log-gas -0.0655
+x 0.3 d2S/dlam2  VP eps.02 -0.1957 eps.01 -0.1993 extrap -0.2030 | linear log-gas -0.1294

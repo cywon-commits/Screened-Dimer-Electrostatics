@@ -17,6 +17,11 @@ class Outer:
         return S,dS
 def run(x,M=64,eps=0.02,rho0=None,Hinit=None):
     O=Outer(M,eps); O.H=Hinit
+    if Hinit is None:
+        r00=rho0 if rho0 is not None else np.full(M//2,0.2)
+        full=np.concatenate([r00,r00[::-1]]); Ms=[m for m in (16,32,64,128) if m<M]+[M]
+        def rf(w): return np.interp(w,-1+(2/M)*(np.arange(M)+.5),full)
+        _,Vml,_=vp.solve_ml(rf,Ms=tuple(Ms),eps=eps); O.H=Vml.H
     du=2.0/M; half=M//2
     def unpack(r): return np.concatenate([r,r[::-1]])
     def f(r):
@@ -33,4 +38,4 @@ if __name__=='__main__':
     for x in [float(v) for v in (sys.argv[3].split(",") if len(sys.argv)>3 else ["0.3","0.4","0.5","0.7"])]:
         s,rho,phi,H,res=run(x,M,eps)
         out[x]=(s,rho,phi); print(M,eps,x,'sigma=%.4f'%s,'nit',res.nit,flush=True)
-    pickle.dump(out,open(f"az/vp_M{M}_e{eps}_{len(sys.argv)}.pkl","wb"))
+    pickle.dump(out,open(f"az/vp2_M{M}_e{eps}_{sys.argv[3] if len(sys.argv)>3 else 'd'}.pkl","wb"))
