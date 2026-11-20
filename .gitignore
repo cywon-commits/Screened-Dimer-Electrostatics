@@ -6,3 +6,12 @@ __pycache__/
 *.pyc
 out/
 val/
+manuscript/*.aux
+manuscript/*.log
+manuscript/*.bbl
+manuscript/*.blg
+manuscript/*.out
+manuscript/*.fls
+manuscript/*.fdb_latexmk
+manuscript/mainNotes.bib
+manuscript/build.out
