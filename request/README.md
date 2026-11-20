@@ -37,3 +37,8 @@ Errors must come from seed-to-seed scatter: at small z single-run block errors u
 
 ## Deliverables
 Output directories + `summary.csv` from `aztec/pt_analyze.py`.
+
+## Request B (2026-11-20): fixed-x series for the full-monomer model
+See `REQUEST_B_ko.md`.  Goal: check that Q_un(N, z) - (N/2) sigma_inf(x) stays bounded at fixed x = 2 log2(1/z)/N
+(x = 0.3, 0.5, 0.7; N = 24-96), i.e. that the full model has the same sigma_inf(x) as the exactly solved boundary model.
+Use `aztec/run_pt_req.sh` (inserts the required z values into the ladder).  Task A (N = 96, 128) is superseded.
