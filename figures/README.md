@@ -5,7 +5,7 @@ Run from this folder; each script writes `<name>.pdf` (vector, for submission) a
 
 | Figure | Command | Input |
 |---|---|---|
-| 1 model, boundary types, Aztec diamond | `python3 fig1_model.py` | none (schematic) |
+| 1 model, boundary types, Aztec diamond | `python3 fig1_model.py` | `../data/fig1_sample.pkl` (made by `python3 sample_aztec.py sample 11`; `python3 sample_aztec.py check 3` compares the sampler with exact edge densities) |
 | 2 isotherms of uniform geometries | `python3 fig2_isotherms.py` | computed (`../isotherms`) |
 | 3 corner charges, reflection, hodograph sector | `python3 fig3_corner_charges.py` | exact solution (`../corner_islands`) |
 | 4 uncompensated fraction | `python3 fig4_sigma.py` | `../data/bx_exact.pkl` |

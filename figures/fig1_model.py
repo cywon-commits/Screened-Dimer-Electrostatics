@@ -1,5 +1,5 @@
 """Fig. 1: vacancies as sublattice charges, the two boundary types, and an Aztec diamond with boundary vacancies."""
-import numpy as np, matplotlib.pyplot as plt
+import pickle, numpy as np, matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, FancyBboxPatch
 from scipy.optimize import linear_sum_assignment
 from style import *
@@ -52,10 +52,9 @@ ax.plot(xs[1:], ys[1:], "k-", lw=1.0); ax.text(4, -0.4, "staircase edge (charged
 ax.set_xlim(-.3, 8.3); ax.set_ylim(-1.6, 11.8); ax.set_aspect("equal"); ax.axis("off")
 # (c) Aztec diamond with boundary vacancies
 ax = fig.add_axes([0.66, 0.0, 0.34, 0.96]); fig.text(0.655, Y, "(c)", fontsize=9, va="top")
-N = 10; cells = [(x, y) for y in range(2 * N) for x in range(2 * N) if abs(x - N + .5) + abs(y - N + .5) <= N]
-def edge_cell(e, p): return [(N - 1 - p, p), (N + p, p), (N + p, 2 * N - 1 - p), (N - 1 - p, 2 * N - 1 - p)][e]
-rem = [edge_cell(e, p) for e in range(4) for p in (3, 5, 6)]
-draw_tiling(ax, cells, matching(cells, rem), [], lw=0.4); [vac(ax, *c, sign=False) for c in rem]
+smp = pickle.load(open("../data/fig1_sample.pkl", "rb")); N = smp["N"]     # equilibrium sample, made by sample_aztec.py
+cells = [(x, y) for y in range(2 * N) for x in range(2 * N) if abs(x - N + .5) + abs(y - N + .5) <= N]
+draw_tiling(ax, cells, smp["dominoes"], [], lw=0.35); [vac(ax, *c, sign=False) for c in smp["vac"]]
 for t, (x, y), ha, va in (("S", (N, -0.4), "center", "top"), ("N", (N, 2 * N + .4), "center", "bottom"), ("W", (-0.4, N), "right", "center"), ("E", (2 * N + .4, N), "left", "center")):
     ax.text(x, y, t, ha=ha, va=va, fontsize=8)
 ax.set_xlim(-1.8, 2 * N + 1.8); ax.set_ylim(-1.8, 2 * N + 1.8)
