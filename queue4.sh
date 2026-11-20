@@ -14,6 +14,10 @@ JOBS=(
   "cold|$VAL|20 2 a0.35 0.005 0.125 500000 4000000 valB 100 100"
   "cold|$VAL|20 3 a0.35 0.005 0.125 500000 4000000 valB 100 100"
   "cold|$VAL|20 4 a0.35 0.005 0.125 500000 4000000 valB 100 100"
+  "cold|$VAL|16 5 a0.35 0.005 0.125 500000 4000000 valB 100 100"
+  "cold|$VAL|16 6 a0.35 0.005 0.125 500000 4000000 valB 100 100"
+  "cold|$VAL|16 7 a0.35 0.005 0.125 500000 4000000 valB 100 100"
+  "cold|$VAL|16 8 a0.35 0.005 0.125 500000 4000000 valB 100 100"
 )
 done_job(){ grep -q '^swap acceptance' "$3/N$1_s$2.ladder" 2>/dev/null && [ ! -e "$3/N$1_s$2.ckpt" ]; }
 running_job(){ pgrep -f "aztec_pt $1 .* $3/N$1_s$2 " >/dev/null; }
