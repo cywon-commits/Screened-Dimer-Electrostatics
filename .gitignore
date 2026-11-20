@@ -14,3 +14,6 @@ queue2.log
 out64pl_*.log
 out64hi_*.log
 queue3.log
+valB/
+valB_*.log
+queue4.log

@@ -9,6 +9,7 @@ squared, to stay on the safe side.  Every interval between required z points is 
 whose predicted acceptance is >= target.
 
 usage: ladder.py N ZMIN ZMAX TARGET   -> prints the ladder (ascending)
+       LADDER_EXTRA="z1 z2 ..." adds further z values that must sit on the ladder (fixed-x runs)
        ladder.py ref OUTDIR M          -> writes ladder_ref_N<M>.txt from finished N=M runs in OUTDIR
 """
 import sys, os, glob, re, numpy as np
@@ -38,7 +39,8 @@ def ladder(N, zmin, zmax, target):
         w = np.clip((np.log(1e-2) - l) / np.log(3), 0, 1)
         return np.sqrt(scale ** (1 + w) * np.interp(l, lz, var))
     step = 2 * erfcinv(target)  # required int sigma dlnz per interval
-    anchors = sorted({zmin, zmax} | {x for x in REQ if zmin < x < zmax})
+    extra = [float(v) for v in os.environ.get('LADDER_EXTRA', '').split()]
+    anchors = sorted({zmin, zmax} | {x for x in REQ + extra if zmin < x < zmax})
     out = [anchors[0]]
     for a, b in zip(anchors[:-1], anchors[1:]):
         g = np.linspace(np.log(a), np.log(b), 2001); s = sig(g)
@@ -50,4 +52,4 @@ def ladder(N, zmin, zmax, target):
 if __name__ == '__main__':
     if sys.argv[1] == 'ref': make_ref(sys.argv[2], int(sys.argv[3])); sys.exit()
     N, a, b, t = int(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])
-    print(' '.join(f'{x:.6g}' for x in ladder(N, a, b, t)))
+    print(' '.join(f'{x:.10g}' for x in ladder(N, a, b, t)))
