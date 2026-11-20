@@ -1,7 +1,7 @@
 """Fig. 5: vacancy density along an edge: exact solution vs boundary-Pfaffian enumeration."""
 import sys, pickle, numpy as np, matplotlib.pyplot as plt
 from scipy.optimize import brentq
-sys.path.insert(0, "../corner_islands")
+sys.path.insert(0, "../src")
 from style import *
 from exact_sol import solve
 sm = pickle.load(open("../data/smallx.pkl", "rb")); pr = pickle.load(open("../data/profiles.pkl", "rb"))

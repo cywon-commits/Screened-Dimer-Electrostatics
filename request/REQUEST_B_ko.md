@@ -9,8 +9,8 @@
 - 지금까지: x = 0.4152 에서 N = 16, 32, 48, 64 → −1.82, −2.31, −2.19, −2.12 (한 x에서만 확인).
 
 ## 계산할 점
-`aztec/aztec_pt.c` (z 방향 병렬 템퍼링). 아래 z가 사다리에 정확히 들어가야 한다.
-`REQ="z1 z2 ..." aztec/run_pt_req.sh N SEED R ZMIN ZMAX THERM MEAS OUTDIR` 를 쓰면 REQ의 z가 사다리에 삽입된다.
+`scripts/aztec/aztec_pt.c` (z 방향 병렬 템퍼링). 아래 z가 사다리에 정확히 들어가야 한다.
+`REQ="z1 z2 ..." scripts/aztec/run_pt_req.sh N SEED R ZMIN ZMAX THERM MEAS OUTDIR` 를 쓰면 REQ의 z가 사다리에 삽입된다.
 
 | x | N | z = 2^(−xN/2) |
 |---|---|---|
@@ -52,5 +52,5 @@ N = 96은 비용이 크므로(기존 추정 약 1,000 코어-시간) 앞의 것�
 x = 0.5: −1.43, −1.70, −1.85, x = 0.3: −1.33, −1.80, −2.19 로 아직 수렴 전이다.
 
 ## 산출물
-- `aztec/pt_analyze.py` 의 `summary.csv` (N, z, Q_un, 시드 간 오차, Ψ 포함)와 사다리 파일.
+- `scripts/aztec/pt_analyze.py` 의 `summary.csv` (N, z, Q_un, 시드 간 오차, Ψ 포함)와 사다리 파일.
 - 작업은 `claude/...` 브랜치에서 하고, main 으로 PR을 연다. 원시 시계열은 PR에 넣지 않는다.

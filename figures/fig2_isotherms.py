@@ -1,6 +1,6 @@
 """Fig. 2: vacancy isotherms of the two uniform geometries (exact transfer matrix vs closed forms)."""
 import sys, numpy as np, matplotlib.pyplot as plt
-sys.path.insert(0, "../isotherms")
+sys.path.insert(0, "../src")
 from style import *
 import tm_diag_b as T
 from loz_cap import lnZ

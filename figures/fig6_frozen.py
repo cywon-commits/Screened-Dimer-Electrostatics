@@ -1,10 +1,10 @@
 """Fig. 6: frozen-corner boundaries and frozen length from the exact solution."""
 import sys, numpy as np, matplotlib.pyplot as plt
 from scipy.optimize import brentq
-sys.path.insert(0, "../corner_islands")
+sys.path.insert(0, "../src")
 from style import *
 from exact_sol import solve
-from exact_more_lib import arctic
+from frozen_boundary import arctic
 from elliptic_sol import Sol
 fig = plt.figure(figsize=(TEXTW, 2.7))
 ax = fig.add_axes([0.02, 0.03, 0.40, 0.90]); fig.text(0.005, 0.965, "(a)", fontsize=9, va="top")

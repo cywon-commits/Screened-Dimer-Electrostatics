@@ -1,10 +1,10 @@
 # Large-scale computation request
 
 Full request document (Korean): `REQUEST_ko.md` in this folder.
-It refers to the files of `aztec_request_pkg.zip`; in this repository they live in `aztec/`
+It refers to the files of `aztec_request_pkg.zip`; in this repository they live in `scripts/aztec/`
 (aztec_pt.c, aztec_mc.c, run_pt.sh, pt_analyze.py, validate.sh, aztec.py, pairs.py),
 `bulk_strip/` (tm2.py), `boundary/` (tm_open.py, tm_diag.py) and `mc_bulk/` (md_mc.c).
-Run the scripts from inside `aztec/`.
+Run the scripts from inside `scripts/aztec/`.
 
 ## Question
 In the Aztec diamond with monomer fugacity z, is Q_un(N, z) - log2(1/z) a universal (z-independent) function f(N)
@@ -12,7 +12,7 @@ for N* = 2 log2(1/z) << N << xi(z)?  Here: f(32) = 1.57-1.69, f(48) = 3.26-3.35,
 And what is the screened limit c(z) of Q_un for small z?
 
 ## Task A (priority 1)
-Parallel tempering in z (`aztec/aztec_pt.c`), z ladder 1e-5 ... 0.1 (must include 1e-5, 3e-5, 1e-4, 3e-4, 1e-3,
+Parallel tempering in z (`scripts/aztec/aztec_pt.c`), z ladder 1e-5 ... 0.1 (must include 1e-5, 3e-5, 1e-4, 3e-4, 1e-3,
 3e-3, 1e-2, 3e-2, 0.1), swap acceptance >= 0.2 everywhere, 4 independent seeds per N.
 
 | N | cells | replicas (est.) | sweeps therm + meas | seeds | core-hours |
@@ -26,7 +26,7 @@ Parallel tempering in z (`aztec/aztec_pt.c`), z ladder 1e-5 ... 0.1 (must includ
 Do N = 32, 48, 64 first (~320 core-hours) and report back.
 
 ## Validation (mandatory, before production)
-`aztec/validate.sh` must reproduce the exact N = 10 values within 2 sigma.  N = 20 exact references:
+`scripts/aztec/validate.sh` must reproduce the exact N = 10 values within 2 sigma.  N = 20 exact references:
 
 | | z=0.001 | 0.003 | 0.01 | 0.03 | 0.1 |
 |---|---|---|---|---|---|
@@ -36,9 +36,9 @@ Do N = 32, 48, 64 first (~320 core-hours) and report back.
 Errors must come from seed-to-seed scatter: at small z single-run block errors underestimate by 3-5x.
 
 ## Deliverables
-Output directories + `summary.csv` from `aztec/pt_analyze.py`.
+Output directories + `summary.csv` from `scripts/aztec/pt_analyze.py`.
 
 ## Request B (2026-11-20): fixed-x series for the full-monomer model
 See `REQUEST_B_ko.md`.  Goal: check that Q_un(N, z) - (N/2) sigma_inf(x) stays bounded at fixed x = 2 log2(1/z)/N
 (x = 0.3, 0.5, 0.7; N = 24-96), i.e. that the full model has the same sigma_inf(x) as the exactly solved boundary model.
-Use `aztec/run_pt_req.sh` (inserts the required z values into the ladder).  Task A (N = 96, 128) is superseded.
+Use `scripts/aztec/run_pt_req.sh` (inserts the required z values into the ladder).  Task A (N = 96, 128) is superseded.

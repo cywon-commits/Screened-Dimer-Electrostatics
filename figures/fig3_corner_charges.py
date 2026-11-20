@@ -2,10 +2,10 @@
 import sys, numpy as np, matplotlib.pyplot as plt
 from matplotlib.patches import Polygon, Wedge
 from scipy.optimize import brentq
-sys.path.insert(0, "../corner_islands")
+sys.path.insert(0, "../src")
 from style import *
 from exact_sol import solve
-from exact_more_lib import arctic
+from frozen_boundary import arctic
 from elliptic_sol import Sol
 X0 = 0.8
 lj = brentq(lambda l: solve(1 + np.exp(l))["x"] - X0, -12, 11, xtol=1e-10); u, v = arctic(1 + np.exp(lj))

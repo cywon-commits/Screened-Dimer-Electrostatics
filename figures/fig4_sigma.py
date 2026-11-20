@@ -2,7 +2,7 @@
 import sys, pickle, numpy as np, matplotlib.pyplot as plt
 from scipy.special import gamma
 from scipy.optimize import brentq
-sys.path.insert(0, "../corner_islands")
+sys.path.insert(0, "../src")
 from style import *
 from elliptic_sol import Sol
 d = pickle.load(open("../data/bx_exact.pkl", "rb"))
