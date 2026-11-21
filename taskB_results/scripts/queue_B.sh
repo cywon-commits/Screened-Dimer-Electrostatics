@@ -16,6 +16,8 @@ for s in 1 2 3 4; do i=cold; [ $s -ge 3 ] && i=empty; JOBS+=("$i|$Z32|32 $s a0.4
 for s in 1 2 3 4; do i=cold; [ $s -ge 3 ] && i=empty; JOBS+=("$i|$Z48|48 $s a0.4 0.000244140625 0.1 4000000 16000000 B48 400 200"); done
 for s in 1 2 3 4; do i=cold; [ $s -ge 3 ] && i=empty; JOBS+=("$i|$Z24|24 $s a0.4 0.002960383919 0.1 1000000 4000000 B24 100 200"); done
 for s in 1 2 3 4; do i=cold; [ $s -ge 3 ] && i=empty; JOBS+=("$i|$Z64a|64 $s a0.4 0.001288581944 0.1 1000000 5000000 B64a 125 200"); done
+# B48 seeds 5-8 (added after B48 1-4 gave +-0.026 at x=0.5; target +-0.02)
+for s in 5 6 7 8; do i=cold; [ $s -ge 7 ] && i=empty; JOBS+=("$i|$Z48|48 $s a0.4 0.000244140625 0.1 4000000 16000000 B48 400 200"); done
 for s in 1 2 3 4; do i=cold; [ $s -ge 3 ] && i=empty; JOBS+=("$i|$Z64b|64 $s a0.45 1.525878906e-05 0.001 0 40000000 B64b 1000 400"); done
 done_job(){ grep -q '^swap acceptance' "$3/N$1_s$2.ladder" 2>/dev/null && [ ! -e "$3/N$1_s$2.ckpt" ]; }
 running_job(){ pgrep -f "aztec_pt $1 .* $3/N$1_s$2 " >/dev/null; }
