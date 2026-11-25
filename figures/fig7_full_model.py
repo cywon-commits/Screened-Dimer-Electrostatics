@@ -28,9 +28,12 @@ for x in (0.7, 0.5, 0.4152, 0.3):
     for N in Ns:
         d, e, s = sel[N]; a.errorbar([1 / N], [d], [e], fmt=MK[x], color=c, mfc="w" if s == "exact" else c, ms=3.5, mew=0.7, capsize=1.5, lw=0.7)
     a.plot([], [], MK[x] + "-", color=c, ms=3.5, lw=0.6, label=f"${x}$")
+    a.plot([0, 1 / Ns[-1]], [pred[x], sel[Ns[-1]][0]], ":", color=c, lw=0.8)      # guide to the eye, not a fit
     a.plot([0], [pred[x]], "*", color=c, ms=7, mec="k", mew=0.4, clip_on=False, zorder=5)
-a.plot([], [], "*", color="w", mec="k", mew=0.4, ms=7, label="predicted limit")
-a.set_xlim(0, 0.09); a.set_ylim(-2.75, -0.2); a.set_xlabel("$1/N$"); a.set_ylabel(r"$Q_{\rm un}^{\rm full}-Q_{\rm un}^{\rm bdry}$")
-a.legend(title="$x$", title_fontsize=7, loc="lower right", ncol=2, columnspacing=1.0)
+a.set_xlim(0, 0.09); a.set_ylim(-2.75, 0.0); a.set_xlabel("$1/N$"); a.set_ylabel(r"$Q_{\rm un}^{\rm full}-Q_{\rm un}^{\rm bdry}$")
+h, l = a.get_legend_handles_labels()
+a.legend(h[:4], l[:4], title="$x$", title_fontsize=7, loc="lower right", bbox_to_anchor=(1.0, 0.0), ncol=1, handlelength=1.6)
+a.annotate("predicted\nlimit", xy=(0.001, pred[0.7]), xytext=(0.006, -0.12), fontsize=7, ha="left", va="center", linespacing=0.9,
+           arrowprops=dict(arrowstyle="-", lw=0.4, shrinkA=0, shrinkB=3))
 panel(ax[0], "(a)", x=-0.14); panel(ax[1], "(b)", x=-0.14)
 save(fig, "fig7_full_model")
