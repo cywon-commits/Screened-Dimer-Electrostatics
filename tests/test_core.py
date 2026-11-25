@@ -55,3 +55,14 @@ def test_edge_free_energy_leading_term():
     assert abs(G.kappa(2) - mp.pi ** 2 / 8) < mp.mpf(10) ** -40
     for n in (4, 6, 8): assert abs(G.kappa(n) - G.closed(n)) < mp.mpf(10) ** -40
     assert abs(G.closed(10 ** 5) - mp.mpf(4) / 3) < 1e-9
+
+def test_compact_form_of_the_hodograph_solution():
+    # Psi = 1 - i mu - F(J)/(zeta + 1/zeta) with F = sum a_n eps^n (scripts/corner_islands/DERIVATION.md)
+    from exact_sol import cheb
+    JM = 5.0; c0, c1, a = cheb(JM); n = np.arange(len(a))
+    for zeta in (0.3 - 0.05j, 0.7 * np.exp(-0.5j), 0.2 * np.exp(-0.7j), 0.9 * np.exp(-0.2j)):
+        J = (zeta**4 + zeta**-4) / 2; B = (c0 - J) / c1; sq = np.sqrt(B * B - 1 + 0j); e = B - sq
+        if abs(e) >= 1: e = B + sq
+        mu = (1 - zeta**2) / (1 + zeta**2); S = (a * e**n).sum()
+        old = np.exp(-1j * np.pi / 4) * np.sqrt(mu) * (1 - J) ** 0.25 * (JM - J) ** 0.5 * (-(2**0.75 / (2 * c1)) * S / (B - e)) + 1 - 1j * mu
+        assert abs(old - (1 - 1j * mu - S / (zeta + 1 / zeta))) < 1e-12
