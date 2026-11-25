@@ -42,3 +42,8 @@ Output directories + `summary.csv` from `scripts/aztec/pt_analyze.py`.
 See `REQUEST_B_ko.md`.  Goal: check that Q_un(N, z) - (N/2) sigma_inf(x) stays bounded at fixed x = 2 log2(1/z)/N
 (x = 0.3, 0.5, 0.7; N = 24-96), i.e. that the full model has the same sigma_inf(x) as the exactly solved boundary model.
 Use `scripts/aztec/run_pt_req.sh` (inserts the required z values into the ladder).  Task A (N = 96, 128) is superseded.
+
+## Later requests
+- `REQUEST_B_ko.md` (2026-11-20): fixed-x series of the full model. Results: `taskB_results/`.
+- `REQUEST_C_ko.md` (2026-11-25): blind test of the predicted limits D_inf(0.6) = -0.586 and D_inf(0.8) = -0.234
+  (five points, N = 24-40, about 75 core-hours). Not yet run.
