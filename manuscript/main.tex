@@ -1,4 +1,4 @@
-% Draft v0.1 (2026-11-21).  Target: Physical Review E, Regular Article.
+% Draft v0.2 (2026-11-25).  Target: Physical Review E, Regular Article.
 % Figures are read from ../figures (made by figures/fig*.py); nothing in this folder is edited by hand.
 \documentclass[reprint,aps,pre,superscriptaddress,longbibliography,floatfix,amsmath,amssymb]{revtex4-2}
 \usepackage{graphicx}
@@ -59,7 +59,7 @@ We consider a region $A$ of the square lattice, made of unit cells colored as a 
 \begin{equation}\label{eq:Z}
   Z_A(z)=\sum_{V}z^{|V|}\,M(A\setminus V),
 \end{equation}
-where the sum runs over sets $V$ of cells and $M(A\setminus V)$ is the number of domino tilings of the remaining cells. In a physical realization $z=\ee^{-E_d/k_BT}$, with $E_d$ the energy of a defect. We use two versions of the model. In the \emph{full model} $V$ is any set of cells. In the \emph{boundary model} $V$ is restricted to the outermost cells of the region, which makes Eq.~\eqref{eq:Z} a Pfaffian~\cite{giuliani2016} and allows enumeration at large sizes. Section~\ref{sec:tests} shows that the two versions have the same scaling limit on the Aztec diamond.
+where the sum runs over sets $V$ of cells and $M(A\setminus V)$ is the number of domino tilings of the remaining cells. In a physical realization $z=\ee^{-E_d/k_BT}$, with $E_d$ the energy of a defect. We use two versions of the model. In the \emph{full model} $V$ is any set of cells. In the \emph{boundary model} $V$ is restricted to the outermost cells of the region, which makes Eq.~\eqref{eq:Z} a Pfaffian~\cite{giuliani2016} and allows enumeration at large sizes. Section~\ref{sec:tests} argues, and tests numerically, that the two versions have the same scaling limit on the Aztec diamond.
 
 \subsection{Charge and height}
 
@@ -348,25 +348,49 @@ Two steps are missing from a proof. Inside the frozen corners one must exhibit a
 
 \subsection{Vacancies on all cells}
 
-In the full model vacancies also enter the interior. At fixed $x$ their number is of order $N^2z^{8/7}=N^2\,2^{-4xN/7}$ (Appendix~\ref{app:bulk}) and vanishes in the scaling limit, so the interior of a large diamond is free of vacancies and the two models should share the function $\sig(x)$. What differs is the layer next to the edge, where a vacancy of the full model can sit a few cells inside.
+In the full model vacancies also enter the interior. At fixed $x$ their number is of order $N^2z^{8/7}=N^2\,2^{-4xN/7}$ (Appendix~\ref{app:bulk}) and vanishes in the scaling limit, so the interior of a large diamond is free of vacancies. What differs from the boundary model is the layer next to the edge, where an adsorbed vacancy of the full model can sit a few cells inside.
 
-We measured the uncompensated charge $\Qun=N/2-Q_{\rm edge}$, where $Q_{\rm edge}$ is the net vacancy charge in the triangular sector of the diamond that contains one edge, for the full model at $x=0.4152$, where $\sig=0.64345$. Table~\ref{tab:full} shows that $\Qun-(N/2)\sig$ stays bounded in both models: it is about $-0.65$ in the boundary model and about $-2.2$ in the full model. The two models thus have the same $\sig$ at this $x$ and differ by a constant number of vacancies per edge. Exact transfer-matrix results for $N\le20$ at $x=0.7$ give $-1.23$, $-1.31$, and $-1.31$ for $N=12$, 16, and 20. This test covers one value of $x$ with four sizes, plus small systems at a second value; it supports, but does not establish, the equivalence of the two models for all $x$.
-% TODO(data): Fig. 7 (fixed-x series of the full model at x = 0.3, 0.5, 0.7; request/REQUEST_B_ko.md) is pending.
+We argue that this difference is a boundary free energy. On a vacancy-bearing part of an edge the normal current vanishes and the tangential slope is $1-2\rho$, which is the uniform state of the staircase strip of Sec.~\ref{sec:uniform} at the same density. A vacancy displaced by $d$ cells from the edge is suppressed by a factor $\tan^d(\pi\rho/2)$ in that state, so the layer has a finite thickness. To first order the two partition functions then differ by a local term,
+\begin{equation}\label{eq:dg}
+  \ln Z_{\rm full}-\ln Z_{\rm bdry}=2N\,I(x)+O(1),
+\end{equation}
+with $I(x)=\int_0^2\delta g\bigl(\rho_x(\ell)\bigr)\,\dd\ell$, where $\delta g(\rho)$ is the free energy gained per edge cell and $\rho_x(\ell)$ is the density profile of the exact solution. The term of order $N^2$ is the same in both models, so they share $\sig(x)$. Since the number of vacancies is $z\,\partial\ln Z/\partial z$ and $z\,\partial_z=-(2/N\ln2)\,\partial_x$ at fixed $N$, the uncompensated charges of an edge differ by a constant,
+\begin{equation}\label{eq:Dinf}
+  D_\infty(x)\equiv\lim_{N\to\infty}\bigl(\Qun^{\rm full}-\Qun^{\rm bdry}\bigr)=\frac{1}{\ln2}\,\frac{\dd I}{\dd x},
+\end{equation}
+without a term that grows with $N$. Here $\Qun=N/2-Q_{\rm edge}$ and $Q_{\rm edge}$ is the net vacancy charge in the triangular sector of the diamond that contains one edge.
+
+The function $\delta g(\rho)$ is a property of the staircase edge alone. We computed it with transfer matrices on strips in which vacancies of one color are allowed on all cells (Appendix~\ref{app:dg}); the result is converged in the strip width to about $0.2\%$ for $\rho\le0.41$ [Fig.~\ref{fig:full}(a)]. It vanishes at $\rho\to0$, because a vacancy on a frozen edge has no freedom to move inward, and it is close to $0.545\tan^2(\pi\rho/2)$ at small $\rho$, with a coefficient that we know only numerically. Inserting it into Eq.~\eqref{eq:Dinf} gives $D_\infty=-0.39$, $-0.85$, $-1.16$, and $-1.78$ for $x=0.7$, $0.5$, $0.4152$, and $0.3$. These numbers use no data from the diamond.
+
+Table~\ref{tab:full} and Fig.~\ref{fig:full}(b) compare them with the full model, for which $\Qun$ was computed exactly for $N\le20$ and by Monte Carlo for $24\le N\le64$; the boundary model is exact at every size. The difference $D$ is not monotonic in $N$: it first decreases, passes through a minimum near $xN\approx14$ for every $x$, that is, at a fixed fugacity $z\approx5\times10^{-3}$, and then rises toward the predicted limit. A linear extrapolation in $1/N$ of the two largest sizes gives $-0.31(8)$, $-0.78(6)$, and $-1.24(15)$ for $x=0.7$, $0.5$, and $0.4152$, in agreement with the predictions within the errors. For $x=0.3$ only one size lies beyond the minimum, and the data are compatible with the prediction but do not test it.
+
+The status of this subsection is therefore as follows. The locality of the difference is an argument, not a proof. The predicted constants agree with the data at three values of $x$, each with two sizes in the asymptotic range, so the approach as $1/N$ is an observation and its amplitude is not derived. One point, $x=0.5$ at $N=64$ ($z=1.5\times10^{-5}$), did not equilibrate with local updates: runs from frozen and from empty initial states had not met after $4\times10^{7}$ sweeps and bracket $21.2<\Qun<25.2$, which contains the value near $21.4$ that the predicted limit and the $1/N$ trend of the smaller sizes suggest. It is not used.
 
 \begin{table}[t]
-\caption{Uncompensated edge charge at $x=0.4152$ ($z=10^{-1}$, $10^{-2}$, $10^{-3}$, $10^{-4}$ for $N=16$, 32, 48, 64). The value for $N=16$ in the full model is exact; the others are Monte Carlo results with statistical errors of about $0.02$ or less. The boundary model is exact.}
+\caption{Uncompensated edge charge of the full model (Monte Carlo; the error in the last digits is the scatter between independent runs) and of the boundary model (exact) at fixed $x$, their difference $D$, and the limit $D_\infty$ predicted by Eq.~\eqref{eq:Dinf}.}
 \label{tab:full}
 \begin{ruledtabular}
-\begin{tabular}{ccccc}
- & \multicolumn{2}{c}{Full model} & \multicolumn{2}{c}{Boundary model}\\
-$N$ & $\Qun$ & $\Qun-\tfrac N2\sig$ & $\Qun$ & $\Qun-\tfrac N2\sig$\\ \hline
-16 & 3.333 & $-1.82$ & 4.479 & $-0.67$\\
-32 & 7.98 & $-2.31$ & 9.637 & $-0.66$\\
-48 & 13.25 & $-2.19$ & 14.792 & $-0.65$\\
-64 & 18.48 & $-2.12$ & 19.942 & $-0.65$\\
+\begin{tabular}{cccccc}
+$x$ & $N$ & $\Qun^{\rm full}$ & $\Qun^{\rm bdry}$ & $D$ & $D_\infty$\\ \hline
+0.7 & 24 & 9.128(7) & 9.770 & $-0.641(7)$ & $-0.39$\\
+ & 32 & 12.686(19) & 13.243 & $-0.557(19)$ & \\
+0.5 & 32 & 9.646(9) & 10.875 & $-1.229(9)$ & $-0.85$\\
+ & 48 & 15.567(19) & 16.646 & $-1.079(19)$ & \\
+0.4152 & 32 & 7.979(3) & 9.638 & $-1.658(3)$ & $-1.16$\\
+ & 48 & 13.249(4) & 14.792 & $-1.544(4)$ & \\
+ & 64 & 18.48(4) & 19.942 & $-1.47(4)$ & \\
+0.3 & 32 & 5.400(1) & 7.682 & $-2.282(1)$ & $-1.78$\\
+ & 48 & 9.349(1) & 11.858 & $-2.509(1)$ & \\
+ & 64 & 13.654(9) & 16.030 & $-2.376(9)$ & \\
 \end{tabular}
 \end{ruledtabular}
 \end{table}
+
+\begin{figure*}[t]
+\includegraphics[width=0.86\textwidth]{fig7_full_model.pdf}
+\caption{Vacancies on all cells change the uncompensated edge charge by a constant that is predicted from the free energy of the edge. (a) Free energy $\delta g$ gained per edge cell when adsorbed vacancies may leave the outermost cells, from one-sided strips of the largest available width ($10\le W\le16$, line) and of width $W=8$ (dotted), and the small-density form $0.545\tan^2(\pi\rho/2)$ (dashed). (b) Difference of the uncompensated edge charge between the full and the boundary model against $1/N$ at fixed $x$. Open symbols: exact; filled symbols: Monte Carlo, with errors from the scatter between independent runs (mostly smaller than the symbols). Stars at $1/N=0$: limits predicted by Eq.~\eqref{eq:Dinf}, which use no data from the diamond.}
+\label{fig:full}
+\end{figure*}
 
 %=====================================================================
 \section{Discussion}\label{sec:discussion}
@@ -380,9 +404,9 @@ $N$ & $\Qun$ & $\Qun-\tfrac N2\sig$ & $\Qun$ & $\Qun-\tfrac N2\sig$\\ \hline
 
 \paragraph*{Artificial spin ice.} In vertex-frustrated artificial spin ices whose low-energy states are dimer covers~\cite{lao2018}, the excitations play the role of vacancies with $z=\ee^{-E_d/k_BT}$. Our results translate into two statements that can be tested on finite arrays with staircase-type boundaries: boundary-induced order should be visible only in arrays smaller than $\Nst=2E_d/(k_BT\ln2)$ lattice spacings, and in larger arrays ordered corners of size $(4/\pi)E_d/k_BT$ should remain, independent of the array size. These follow from Gauss's law for the emergent charge and from the stiffness of the height field, and do not depend on details of the dimer weights. We regard them as design guidelines; we have not modeled a specific array, the kinetics of its defects, or interactions between them.
 
-\paragraph*{Range of validity.} The solution is derived from the variational principle of Eq.~\eqref{eq:var0}, which we support by an argument (Appendix~\ref{app:variational}) and by the enumeration, not by a proof. The agreement with enumeration is established for the boundary model at $0.1\le x\le0.9$ and $N\le192$. For the full model the equality of $\sig(x)$ is supported at one value of $x$. The scaling limit requires $N$ to be smaller than the bulk screening length; for larger diamonds bulk vacancies are present, and we have not treated that regime. The frozen boundaries of Fig.~\ref{fig:frozen}(a) have been checked against the arctic circle at $x\to1$ only.
+\paragraph*{Range of validity.} The solution is derived from the variational principle of Eq.~\eqref{eq:var0}, which we support by an argument (Appendix~\ref{app:variational}) and by the enumeration, not by a proof. The agreement with enumeration is established for the boundary model at $0.1\le x\le0.9$ and $N\le192$. For the full model the equality of $\sig(x)$ rests on the locality argument of Sec.~\ref{sec:tests} and on the agreement of the predicted constants $D_\infty$ with Monte Carlo data at three values of $x$. The scaling limit requires $N$ to be smaller than the bulk screening length; for larger diamonds bulk vacancies are present, and we have not treated that regime. The frozen boundaries of Fig.~\ref{fig:frozen}(a) have been checked against the arctic circle at $x\to1$ only.
 
-\paragraph*{Open problems.} Ciucu and Krattenthaler asked for the correlation of boundary dents in the generic case in which the segments joining them do not all cross the inscribed circle~\cite{ciucu2023}. The present solution answers a thermodynamic version of that question, with a number of dents proportional to $N$. A proof would require the two steps named in Sec.~\ref{sec:tests}. It would also be of interest to close Eqs.~\eqref{eq:xcond} and \eqref{eq:sigexact} in elliptic integrals, to obtain the constant corrections of Table~\ref{tab:full}, and to treat regions with both neutral and charged edges.
+\paragraph*{Open problems.} Ciucu and Krattenthaler asked for the correlation of boundary dents in the generic case in which the segments joining them do not all cross the inscribed circle~\cite{ciucu2023}. The present solution answers a thermodynamic version of that question, with a number of dents proportional to $N$. A proof would require the two steps named in Sec.~\ref{sec:tests}. It would also be of interest to close Eqs.~\eqref{eq:xcond} and \eqref{eq:sigexact} in elliptic integrals, to derive the edge free energy $\delta g(\rho)$ and the $1/N$ approach seen in Fig.~\ref{fig:full}(b), and to treat regions with both neutral and charged edges.
 
 %=====================================================================
 \section{Conclusion}\label{sec:conclusion}
@@ -464,9 +488,15 @@ where $m_1$ is the smallest inverse correlation length. Transfer matrices on cyl
 
 \paragraph*{Sampling.} The configuration in Fig.~\ref{fig:model}(c) was generated in two steps. The vacancy set was sampled by a Metropolis algorithm on subsets of the outermost cells with weight $z^{|V|}M(A\setminus V)$, where $M$ is computed as a Kasteleyn determinant~\cite{TODO-kasteleyn1961}; the tiling was then drawn exactly, domino by domino, from the inverse Kasteleyn matrix. At $N=24$ and $x=0.5$ the sampled density profile agrees with the exact one within statistical error (mean number of vacancies per edge $4.06$ against $4.01$).
 
-\paragraph*{Full model.} Exact results for $N\le20$ were obtained by transfer matrices. Larger sizes were simulated by Monte Carlo with local moves and parallel tempering in $z$; the runs were validated against the exact values at $N=10$ and $20$.
+\paragraph*{Full model.} Exact results for $N\le20$ were obtained by transfer matrices. Larger sizes were simulated by Monte Carlo with local moves and parallel tempering in $z$, with 4 or 8 independent runs per size, half started from the frozen tiling and half from the empty lattice. Errors are the standard deviation of the run means divided by the square root of their number; with 4 runs this can underestimate the error. The code reproduces five exact values at $N=16$ and $20$ within one standard error. For $z\lesssim3\times10^{-5}$ at $N=64$ the two kinds of initial state do not meet within $4\times10^7$ sweeps, and such points are excluded.
 
 \paragraph*{Software.} The codes were written with the assistance of an AI system (Claude, Anthropic). The core routines are covered by tests that compare independent implementations, including the closed-form boundary kernel against direct enumeration.
+
+%=====================================================================
+\section{Edge free energy from one-sided strips}\label{app:dg}
+%=====================================================================
+
+The function $\delta g(\rho)$ of Eq.~\eqref{eq:dg} is defined in the limit $z\to0$ at fixed edge density, in which no vacancy pair exists in the interior. A strip with vacancies allowed on all cells reaches this limit slowly, because at the widths accessible to transfer matrices the fugacity that gives $\rho\gtrsim0.35$ is not small. We therefore use a one-sided strip of width $W$: vacancies of the color of the left edge are allowed on every cell, and vacancies of the other color only on the outermost cells of the right edge. A neutral pair cannot form in the interior, and the limit is reached up to terms of order $\tan^W(\pi\rho/2)$. The reference is the same strip with vacancies on the outermost cells of both edges. The two are compared at equal density, through the Legendre transform $\phi(\rho)=\ln\Lambda(z)-2\rho\ln z$ of the logarithm of the largest eigenvalue $\Lambda$ of the transfer matrix, and $\delta g=\phi_{\rm one}-\phi_{\rm bdry}$; a comparison at equal $z$ would add a correction of order $1/W$ from the shift of the state. For $\rho=0.1$, $0.2$, $0.3$, and $0.4$ the widths $W=8$, $12$, and $16$ give $\delta g=0.014035$, $0.013946$, $0.013914$; $0.060152$, $0.059672$, $0.059501$; $0.149861$, $0.148686$, $0.148101$; and $0.305246$, $0.308423$, $0.308052$. The derivative in Eq.~\eqref{eq:Dinf} was taken by a symmetric difference with step $0.01$ in $x$; replacing the table for $W\le16$ by that for $W\le12$ changes $D_\infty$ by less than $0.005$.
 
 \bibliography{refs}
 \end{document}

@@ -1,5 +1,17 @@
 # Manuscript versions
 
+## v0.2 (2026-11-25) full model
+- Sec. VI C rewritten: the difference between the full and the boundary model is an edge free energy dg(rho);
+  D_inf(x) = (1/ln 2) dI/dx, Eqs. (dg), (Dinf). Evidence level stated in the text: locality is an argument; predicted
+  constants agree with Monte Carlo at x = 0.7, 0.5, 0.4152 (two sizes each in the asymptotic range); x = 0.3 is not a test.
+- Table III replaced by the fixed-x series (request B + task A), with D and the predicted D_inf.
+- New Fig. 7 (`figures/fig7_full_model.py`) and Appendix F (one-sided strips).
+- Source of the N = 64, z = 1e-4 point fixed: 18.475 +- 0.038 (task A interim report 4); v0.1 quoted "about 0.02".
+- Sec. II A, Discussion (range of validity, open problems), Appendix E (full model) updated accordingly. 13 pages.
+- Still open from v0.1: author list, arXiv:2506.15769, 13 `TODO-` references, definition of Q_edge against the code.
+- Not blind: the predictions were compared with data that already existed. Predictions recorded before any data:
+  D_inf(0.6) = -0.586, D_inf(0.8) = -0.234 (`data/full_vs_boundary/D_inf.csv`).
+
 ## v0.1 (2026-11-21) first full draft
 - All sections I-VIII and Appendices A-E written; compiles with REVTeX 4.2 (`pre`, `reprint`), 12 pages, no warnings.
 - No new calculations except the sampler behind Fig. 1(c) (`src/sample_aztec.py`, checked at N=24, x=0.5).
