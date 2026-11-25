@@ -6,6 +6,8 @@ usage (from taskB_results/):  python3 scripts/fixedx_table.py RUNDIR [RUNDIR ...
   directory and on cold (brick-wall start) / hot (AZTEC_INIT=empty start) subsets.  Seeds whose number
   mod 4 is 1 or 2 are cold starts, 3 or 0 are hot starts (queue_B.sh convention).
 Error = seed-to-seed scatter (pt_analyze.py: std of per-seed means / sqrt(#seeds)).
+Column `converged`: 1 if cold and hot starts agree within 3 combined errors, else 0.  For rows with converged = 0
+the numbers are averages over runs that have not met; do not use them (see README, B64b).
 """
 import sys, os, re, csv, glob, subprocess, tempfile
 
@@ -28,6 +30,9 @@ def pick(rows, z):
     r = min(rows, key=lambda r: abs(float(r['z']) / z - 1))
     return r if abs(float(r['z']) / z - 1) < 1e-4 else None
 
+def converged(qc, ec, qh, eh):
+    return int(abs(qc - qh) <= 3 * (ec * ec + eh * eh) ** 0.5)
+
 def min_acc(d):
     m = 1.0
     for f in glob.glob(os.path.join(d, '*.ladder')):
@@ -38,7 +43,7 @@ def min_acc(d):
 
 w = csv.writer(sys.stdout)
 w.writerow(['x', 'N', 'z', 'Q_un', 'err', 'seeds', 'Psi', 'sigma_inf', 'Q_un-(N/2)sigma_inf',
-            'Q_un_cold', 'err_cold', 'Q_un_hot', 'err_hot', 'min_swap_acc', 'run'])
+            'Q_un_cold', 'err_cold', 'Q_un_hot', 'err_hot', 'min_swap_acc', 'run', 'converged'])
 for d in sys.argv[1:]:
     d = d.rstrip('/')
     rows = analyze(d)
@@ -55,4 +60,5 @@ for d in sys.argv[1:]:
         q = float(r['Q_un'])
         w.writerow([x, N, f'{z:.10g}', f'{q:.4f}', f"{float(r['err']):.4f}", r['seeds'], f"{float(r['Psi']):.4f}", sig,
                     f'{q - N / 2 * sig:.4f}', f"{float(c['Q_un']):.4f}", f"{float(c['err']):.4f}",
-                    f"{float(h['Q_un']):.4f}", f"{float(h['err']):.4f}", f'{min_acc(d):.3f}', os.path.basename(d)])
+                    f"{float(h['Q_un']):.4f}", f"{float(h['err']):.4f}", f'{min_acc(d):.3f}', os.path.basename(d),
+                    converged(float(c['Q_un']), float(c['err']), float(h['Q_un']), float(h['err']))])
