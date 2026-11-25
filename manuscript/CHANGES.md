@@ -1,5 +1,11 @@
 # Manuscript versions
 
+## Decision (2026-11-26): corner-switch sample
+- The closed-form solution for the square with two vacancy-bearing edges (shakti-arctic-design, docs/analytic-results.md
+  5.8-5.10) goes into the design paper, not into this manuscript. Nothing from it is added here.
+- Whether this manuscript cites it (general applicability of the method; origin of the integration by parts behind
+  Eq. (dsdx)) is decided by the order of submission. Until then the manuscript does not mention it.
+
 ## v0.4 (2026-11-25) differential relation
 - New Eq. (dsdx): d sigma/d x = (2 ln2/pi) K(k1')/K(k1), k1 = 2/p_M (Sec. V B), derivation in Appendix B
   (compact form Psi = 1 - i mu - F(J)/(zeta + 1/zeta), parameter derivative is a homogeneous solution).
