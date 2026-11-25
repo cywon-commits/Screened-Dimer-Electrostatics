@@ -16,3 +16,4 @@
 | lao2018 | checked | Springer/Nature page 2026-11-21 |
 | TODO-* (13 keys) | NOT checked | entered from memory: Thurston 1990, Elkies et al. 1992, Jockusch-Propp-Shor 1998, Cohn-Elkies-Propp 1996, Fisher-Stephenson 1963, Kasteleyn 1961, Papanikolaou et al. 2007, Wang et al. 2006, Nisoli et al. 2013, Pokrovsky-Talapov 1979, Destri-de Vega 1991, Zamolodchikov 1995, Stillinger-Lovett 1968 |
 | arXiv:2506.15769 | NOT in the bibliography | title and authors could not be confirmed by search |
+| TODO-won-design | placeholder | companion paper in preparation; title and authors to be fixed, replace by arXiv number |

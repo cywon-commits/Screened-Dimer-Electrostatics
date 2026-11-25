@@ -1,10 +1,14 @@
 # Manuscript versions
 
-## Decision (2026-11-26): corner-switch sample
-- The closed-form solution for the square with two vacancy-bearing edges (shakti-arctic-design, docs/analytic-results.md
-  5.8-5.10) goes into the design paper, not into this manuscript. Nothing from it is added here.
-- Whether this manuscript cites it (general applicability of the method; origin of the integration by parts behind
-  Eq. (dsdx)) is decided by the order of submission. Until then the manuscript does not mention it.
+## v0.5 (2026-11-26) cross-citation with the design paper
+- Decision: this manuscript is submitted first. The corner-switch solution (square with two vacancy-bearing edges,
+  shakti-arctic-design docs/analytic-results.md 5.8-5.10) is published in the design paper, which cites this paper
+  for the hodograph method (Sec. V, Appendix B).
+- This manuscript: one sentence in "Open problems" pointing to that case, with reference `TODO-won-design`
+  (in preparation; title and author list are placeholders). No derivation is repeated here.
+- Checked here before citing: internal consistency of the reported closed form (X1 = a, X2 = sqrt a, the edge relation,
+  x_f ln2 = ln(1+sqrt2)). The comparison with enumeration was not repeated in this repository.
+- If the design paper is not ready when this one is submitted, cite it as "in preparation" or drop the last clause.
 
 ## v0.4 (2026-11-25) differential relation
 - New Eq. (dsdx): d sigma/d x = (2 ln2/pi) K(k1')/K(k1), k1 = 2/p_M (Sec. V B), derivation in Appendix B
