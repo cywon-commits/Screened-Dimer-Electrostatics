@@ -1,5 +1,11 @@
 # Manuscript versions
 
+## v0.3 (2026-11-25) leading term of the edge free energy
+- dg(rho) = (4/3) rho^2 + O(rho^3): Eq. (dglead) in Sec. VI C, derivation in Appendix F (wall picture, COE, Pfaffian
+  evaluation, closed form kappa_n). Fig. 7(a) dashed curve is now this leading term; the fitted 0.545 tan^2 is removed.
+- Status in the text: the closed form for kappa_n is identified from exact values and checked to n = 40, not proved;
+  the order of limits (width before length) is assumed; no closed form for the full function.
+
 ## v0.2 (2026-11-25) full model
 - Sec. VI C rewritten: the difference between the full and the boundary model is an edge free energy dg(rho);
   D_inf(x) = (1/ln 2) dI/dx, Eqs. (dg), (Dinf). Evidence level stated in the text: locality is an argument; predicted

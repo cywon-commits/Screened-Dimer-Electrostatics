@@ -46,3 +46,12 @@ def test_strip_isotherm():
     import tm_diag_b as T
     T.RIN = 0.0; W, t = 10, 0.8
     assert abs(T.densities(W, t ** (W / 2))[2][0] - (2 / np.pi) * np.arctan(t)) < 0.01
+
+def test_edge_free_energy_leading_term():
+    # exact Pfaffian value of kappa_n against the closed form, and the limit 4/3
+    import mpmath as mp
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts", "full_vs_boundary"))
+    import dg_leading as G
+    assert abs(G.kappa(2) - mp.pi ** 2 / 8) < mp.mpf(10) ** -40
+    for n in (4, 6, 8): assert abs(G.kappa(n) - G.closed(n)) < mp.mpf(10) ** -40
+    assert abs(G.closed(10 ** 5) - mp.mpf(4) / 3) < 1e-9

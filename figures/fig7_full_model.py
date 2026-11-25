@@ -12,7 +12,7 @@ for k in ("dg_W8", "dg_W10", "dg_W12", "dg_W14", "dg_W16"):       # the largest 
 fig, ax = plt.subplots(1, 2, figsize=(TEXTW, 2.5), gridspec_kw=dict(wspace=0.30))
 a = ax[0]; t = np.tan(np.pi * rho / 2)
 a.plot(rho, best, "k-", label="one-sided strip, largest $W$"); a.plot(rho, col("dg_W8"), ":", color=GREY, label="$W=8$")
-a.plot(rho, 0.545 * t * t, "--", color=VERM, label=r"$0.545\,\tan^2(\pi\rho/2)$")
+a.plot(rho, 4 * rho**2 / 3, "--", color=VERM, label=r"leading term $(4/3)\rho^2$")
 a.set_xlabel(r"edge vacancy density $\rho$"); a.set_ylabel(r"edge free energy $\delta g$"); a.set_xlim(0, 0.42); a.set_ylim(0, 0.33); a.legend(loc="upper left")
 D = [(int(r["N"]), float(r["x"]), float(r["D"]), float(r["err"]), r["source"]) for r in csv.DictReader(open(P + "D_table.csv"))]
 extra = {0.4152: [(64, -1.467, 0.038, "MC")]}   # Q_un = 18.475 +- 0.038 (taskA_results/reports/interim4_N64pl.md) minus 19.942 (boundary, exact)
