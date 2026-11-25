@@ -14,7 +14,7 @@ with open(P+'D_table.csv','w',newline='') as f:
     w=csv.writer(f); w.writerow(['N','z','x','Q_un_full','err','Q_un_boundary','D','source'])
     for N,z,q,e,qb,run in rows: w.writerow([N,f'{z:.10g}',f'{2*np.log2(1/z)/N:.5f}',f'{q:.5f}',f'{e:.5f}',f'{qb:.5f}',f'{q-qb:.5f}',run])
 pred={0.7:-0.3882,0.5:-0.8504,0.4152:-1.1554,0.3:-1.7798}          # predict.py 16 0.4 ...
-extra={0.4152:[(64,-1.464,0.02)]}                                   # manuscript Table (N = 64, z = 1e-4)
+extra={0.4152:[(64,-1.467,0.038)]}   # N = 64, z = 1e-4: Q_un = 18.475 +- 0.038 (taskA_results/reports/interim4_N64pl.md), Q_un(boundary) = 19.942
 fig,ax=plt.subplots(1,2,figsize=(9.6,3.9))
 a=ax[0]
 for W in Ws: a.plot(rs,tab[W],label=f'W = {W}',lw=1)
