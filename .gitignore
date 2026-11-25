@@ -15,3 +15,4 @@ manuscript/*.fls
 manuscript/*.fdb_latexmk
 manuscript/mainNotes.bib
 manuscript/build.out
+taskB_results/run/
