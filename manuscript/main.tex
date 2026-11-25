@@ -1,4 +1,4 @@
-% Draft v0.3 (2026-11-25).  Target: Physical Review E, Regular Article.
+% Draft v0.4 (2026-11-25).  Target: Physical Review E, Regular Article.
 % Figures are read from ../figures (made by figures/fig*.py); nothing in this folder is edited by hand.
 \documentclass[reprint,aps,pre,superscriptaddress,longbibliography,floatfix,amsmath,amssymb]{revtex4-2}
 \usepackage{graphicx}
@@ -258,7 +258,11 @@ and the uncompensated fraction is
 \begin{equation}\label{eq:sigexact}
   \sig=h_M+\int_{h_M}^{1}u\,\dd h,\qquad h_M=\frac4\pi\arctan\rM .
 \end{equation}
-The density profile and the frozen length are thus given by complete elliptic integrals, while $x$ and $\sig$ require one further quadrature each; we have not been able to reduce these two to elliptic integrals. Table~\ref{tab:sol} lists representative values and Fig.~\ref{fig:sigma}(a) shows $\sig(x)$.
+The density profile and the frozen length are thus given by complete elliptic integrals, while $x$ and $\sig$ require one further quadrature each, which we have not been able to reduce to elliptic integrals. Their differentials, however, are related in closed form (Appendix~\ref{app:rh}),
+\begin{equation}\label{eq:dsdx}
+  \frac{\dd\sig}{\dd x}=\frac{2\ln2}{\pi}\,\frac{K\bigl(\sqrt{1-k_1^2}\bigr)}{K(k_1)},\qquad k_1=\frac{2}{\pM}.
+\end{equation}
+By Eq.~\eqref{eq:sigH}, $\sig$ is the height of a corner and $x\ln2$ is its charge, so Eq.~\eqref{eq:dsdx} is the inverse differential capacitance of a corner. It is governed by a single elliptic modulus: $\dd\sig/\dd x=-(2\ln2/\pi^2)\ln q_1$, with $q_1$ the nome of $k_1$. Table~\ref{tab:sol} lists representative values and Fig.~\ref{fig:sigma}(a) shows $\sig(x)$.
 
 \begin{table}[b]
 \caption{Exact solution in the scaling limit: hodograph parameter $\rM$, uncompensated fraction $\sig$, frozen length $\dst$ in units of half an edge, and vacancy density $\rho_M$ at the middle of the edge, from Eqs.~\eqref{eq:hr}--\eqref{eq:sigexact}.}
@@ -410,7 +414,7 @@ $x$ & $N$ & $\Qun^{\rm full}$ & $\Qun^{\rm bdry}$ & $D$ & $D_\infty$\\ \hline
 
 \paragraph*{Range of validity.} The solution is derived from the variational principle of Eq.~\eqref{eq:var0}, which we support by an argument (Appendix~\ref{app:variational}) and by the enumeration, not by a proof. The agreement with enumeration is established for the boundary model at $0.1\le x\le0.9$ and $N\le192$. For the full model the equality of $\sig(x)$ rests on the locality argument of Sec.~\ref{sec:tests} and on the agreement of the predicted constants $D_\infty$ with Monte Carlo data at three values of $x$. The scaling limit requires $N$ to be smaller than the bulk screening length; for larger diamonds bulk vacancies are present, and we have not treated that regime. The frozen boundaries of Fig.~\ref{fig:frozen}(a) have been checked against the arctic circle at $x\to1$ only.
 
-\paragraph*{Open problems.} Ciucu and Krattenthaler asked for the correlation of boundary dents in the generic case in which the segments joining them do not all cross the inscribed circle~\cite{ciucu2023}. The present solution answers a thermodynamic version of that question, with a number of dents proportional to $N$. A proof would require the two steps named in Sec.~\ref{sec:tests}. It would also be of interest to close Eqs.~\eqref{eq:xcond} and \eqref{eq:sigexact} in elliptic integrals, to obtain the edge free energy $\delta g(\rho)$ beyond its leading term and the $1/N$ approach seen in Fig.~\ref{fig:full}(b), and to treat regions with both neutral and charged edges.
+\paragraph*{Open problems.} Ciucu and Krattenthaler asked for the correlation of boundary dents in the generic case in which the segments joining them do not all cross the inscribed circle~\cite{ciucu2023}. The present solution answers a thermodynamic version of that question, with a number of dents proportional to $N$. A proof would require the two steps named in Sec.~\ref{sec:tests}. It would also be of interest to integrate Eq.~\eqref{eq:dsdx} in closed form, to obtain the edge free energy $\delta g(\rho)$ beyond its leading term and the $1/N$ approach seen in Fig.~\ref{fig:full}(b), and to treat regions with both neutral and charged edges.
 
 %=====================================================================
 \section{Conclusion}\label{sec:conclusion}
@@ -457,6 +461,13 @@ with $c_0=(1+J_M)/2$, $c_1=(J_M-1)/2$, $\epsilon$ the root of $\epsilon+\epsilon
   2\cosh\!\left[\tfrac14{\rm arccosh}(c_0-c_1\cos\varphi)\right]=\sum_{n\ge0}a_n\cos n\varphi .
 \end{equation}
 On the edge, $J=c_0-c_1\cos\varphi$, this gives $u(\varphi)=1+(r+r^{-1})\sum_na_n\sin n\varphi/[2\sqrt{c_1}\sin(\varphi/2)]$, and on the axis MO, $v=1-\sum_na_n\epsilon^n/(r+r^{-1})$. Summing the series leads to Eqs.~\eqref{eq:u} and \eqref{eq:v}. The two forms were implemented independently and agree to $10^{-8}$ in $x$, $\sig$, and $\dst$ for $0.1\le\rM\le0.9$; the series loses accuracy for $x\lesssim0.1$, and the numbers quoted in this paper are from the elliptic form. Equation~\eqref{eq:xcond} is equivalent to $x\ln2=\int_{\rm MO}\ln[(1+r)/(1-r)]\,\dd v$, the total current through the symmetry axis.
+
+In terms of the function $\mathfrak F(J)=\sum_na_n\epsilon^n$, which is analytic outside the cut $[1,J_M]$ and has the real part $r+r^{-1}$ on it, the solution reads $\Psi=1-\ii\mu-\mathfrak F(J)/(\zeta+\zeta^{-1})$, and with $P=\zeta^2+\zeta^{-2}$
+\begin{align}
+  x\ln2&=\ln\frac{1+\rM}{1-\rM}-\int_{\pM}^{\infty}\mathfrak F\,\frac{\dd P}{P^2-4},\\
+  \sig&=1+\frac2\pi\int_2^{\pM}{\rm Im}\,\mathfrak F\,\frac{\dd P}{P^2-4}.
+\end{align}
+The boundary value of $\mathfrak F$ on the cut does not depend on $J_M$, so its derivative with respect to $J_M$ solves the homogeneous problem, $\partial\mathfrak F/\partial J_M=a_0'(J_M)\sqrt{(J-1)/(J-J_M)}$, where $a_0=\mathfrak F(\infty)=(4\sqrt{2\pM}/\pi)[E(k)-K(k)/2]$. Both integrals then become complete elliptic integrals of the first kind, $\dd(x\ln2)/\dd\pM=-a_0'(\pM)K(k_1)/\pM$ and $\dd\sig/\dd\pM=-(2/\pi)a_0'(\pM)K(\sqrt{1-k_1^2})/\pM$, which gives Eq.~\eqref{eq:dsdx}. For $x\to0$ it reproduces the derivative of Eq.~\eqref{eq:smallx}, including the constant $B$. We checked Eq.~\eqref{eq:dsdx} against finite differences of the solution to $10^{-7}$.
 
 On the arc, $\zeta=\ee^{-\ii\phi}$ with $0<\phi<\pi/4$, $\Psi$ is real and $\lambda=-T$ with $T=\tan\phi$. The frozen boundary is the envelope of the lines $v+Tu=\Psi(T)$, namely $u=\Psi'(T)$ and $v=\Psi-T\Psi'$, completed by the reflection $u\leftrightarrow v$. For $x=0.999$ this curve satisfies $(u-1)^2+(v-1)^2=1$ to within $3\times10^{-4}$.
 

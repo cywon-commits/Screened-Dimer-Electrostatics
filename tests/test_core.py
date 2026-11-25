@@ -66,3 +66,10 @@ def test_compact_form_of_the_hodograph_solution():
         mu = (1 - zeta**2) / (1 + zeta**2); S = (a * e**n).sum()
         old = np.exp(-1j * np.pi / 4) * np.sqrt(mu) * (1 - J) ** 0.25 * (JM - J) ** 0.5 * (-(2**0.75 / (2 * c1)) * S / (B - e)) + 1 - 1j * mu
         assert abs(old - (1 - 1j * mu - S / (zeta + 1 / zeta))) < 1e-12
+
+def test_differential_relation_sigma_x():
+    # d sigma/d x = (2 ln2/pi) K'/K(k1), k1 = 2/p_M, against finite differences of the solution
+    import elliptic_sol as ES
+    for r in (0.2, 0.5, 0.8):
+        h = 1e-4; a, b = ES.Sol(r - h), ES.Sol(r + h)
+        assert abs((b.sigma() - a.sigma()) / (b.x() - a.x()) / ES.dsigma_dx(r) - 1) < 1e-6

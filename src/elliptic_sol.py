@@ -40,3 +40,13 @@ if __name__=='__main__':
     print('small rho_M:  x ln2 / rho_M  ->  pi/varpi = %.6f'%(np.pi/varpi))
     for rM in (0.05,0.02,0.01,0.003,0.001):
         S=Sol(rM); x=S.x(); print('   rho_M %.3f  x %.6f  x ln2/rho_M %.6f   d*/x %.6f (4 ln2/pi = %.6f)'%(rM,x,x*np.log(2)/rM,S.dstar()/x,4*np.log(2)/np.pi))
+
+# --- closed relations between the differentials (scripts/corner_islands/DERIVATION.md, section 5) ---
+def dsigma_dx(rM):
+    """d sigma / d x = (2 ln2/pi) K(k1')/K(k1), k1 = 2/p_M."""
+    from scipy.special import ellipk
+    k1 = 2 / (rM**2 + rM**-2); return 2 * np.log(2) / np.pi * ellipk(1 - k1 * k1) / ellipk(k1 * k1)
+def a0(rM):
+    """Mean of F on the cut, frak F at the centre: a0 = (4 sqrt(2 p_M)/pi) [E(k) - K(k)/2], k^2 = (p_M-2)/(2 p_M)."""
+    from scipy.special import ellipk, ellipe
+    pM = rM**2 + rM**-2; m = (pM - 2) / (2 * pM); return 4 * np.sqrt(2 * pM) / np.pi * (ellipe(m) - ellipk(m) / 2)

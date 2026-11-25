@@ -1,5 +1,11 @@
 # Manuscript versions
 
+## v0.4 (2026-11-25) differential relation
+- New Eq. (dsdx): d sigma/d x = (2 ln2/pi) K(k1')/K(k1), k1 = 2/p_M (Sec. V B), derivation in Appendix B
+  (compact form Psi = 1 - i mu - F(J)/(zeta + 1/zeta), parameter derivative is a homogeneous solution).
+  Checked against finite differences (1e-7) and against the small-x law including the constant B.
+- x and sigma themselves still need one quadrature each.
+
 ## v0.3 (2026-11-25) leading term of the edge free energy
 - dg(rho) = (4/3) rho^2 + O(rho^3): Eq. (dglead) in Sec. VI C, derivation in Appendix F (wall picture, COE, Pfaffian
   evaluation, closed form kappa_n). Fig. 7(a) dashed curve is now this leading term; the fitted 0.545 tan^2 is removed.
